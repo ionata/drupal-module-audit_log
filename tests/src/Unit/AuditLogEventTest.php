@@ -20,9 +20,9 @@ class AuditLogEventTest extends UnitTestCase {
    */
   public function testSettersGetters() {
     /** @var \Drupal\Core\Session\AccountInterface $account */
-    $account = $this->getMock(AccountInterface::class);
+    $account = $this->createMock(AccountInterface::class);
     /** @var \Drupal\Core\Entity\EntityInterface $entity */
-    $entity = $this->getMock(EntityInterface::class);
+    $entity = $this->createMock(EntityInterface::class);
 
     $timestamp = time();
 

@@ -57,7 +57,7 @@ class AuditLogViewsData extends EntityViewsData {
     $subscribers = \Drupal::service('audit_log.logger')->getEventSubscribers();
     $return = [];
 
-    /* @var \Drupal\audit_log\EventSubscriber\EventSubscriberInterface[] $subscribers */
+    /** @var \Drupal\audit_log\EventSubscriber\EventSubscriberInterface[] $subscribers */
     foreach ($subscribers as $subscriber) {
       $entity_type = $subscriber->getEntityType();
       if ($entity_manager->hasDefinition($entity_type)) {
