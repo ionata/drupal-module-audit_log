@@ -1,6 +1,7 @@
 services:
   audit_log.logger:
     class: Drupal\audit_log\AuditLogLogger
+    arguments: ['@current_user', '@datetime.time', '@audit_log.storage_backend.database']
     tags:
       - { name: service_collector, tag: audit_log_event_subscriber, call: addEventSubscriber }
 
@@ -11,6 +12,7 @@ services:
 
   audit_log.storage_backend.database:
     class: Drupal\audit_log\StorageBackend\Database
+    arguments: ['@module_handler']
     tags:
       - { name: audit_log_storage_backend }
 

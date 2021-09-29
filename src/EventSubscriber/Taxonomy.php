@@ -4,6 +4,7 @@ namespace Drupal\audit_log\EventSubscriber;
 
 use Drupal\audit_log\AuditLogEventInterface;
 use Drupal\Core\Render\Markup;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Processes taxonomy_term entity events.
@@ -11,6 +12,8 @@ use Drupal\Core\Render\Markup;
  * @package Drupal\audit_log\EventSubscriber
  */
 class Taxonomy implements EventSubscriberInterface {
+
+  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
@@ -33,7 +36,7 @@ class Taxonomy implements EventSubscriberInterface {
 
     if ($event_type == 'insert') {
       $event
-        ->setMessage(t('@title term has been added to @voc vocabulary.', $args))
+        ->setMessage($this->t('@title term has been added to @voc vocabulary.', $args))
         ->setPreviousState(NULL)
         ->setCurrentState($current_state);
       return TRUE;
@@ -41,7 +44,7 @@ class Taxonomy implements EventSubscriberInterface {
 
     if ($event_type == 'update') {
       $event
-        ->setMessage(t('@title term has been update in @voc vocabulary.', $args))
+        ->setMessage($this->t('@title term has been update in @voc vocabulary.', $args))
         ->setPreviousState($previous_state)
         ->setCurrentState($current_state);
       return TRUE;
@@ -49,7 +52,7 @@ class Taxonomy implements EventSubscriberInterface {
 
     if ($event_type == 'delete') {
       $event
-        ->setMessage(t('@title term has been deleted from @voc vocabulary.', $args))
+        ->setMessage($this->t('@title term has been deleted from @voc vocabulary.', $args))
         ->setPreviousState($previous_state)
         ->setCurrentState(NULL);
       return TRUE;

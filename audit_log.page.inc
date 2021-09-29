@@ -18,6 +18,4 @@
  *   - attributes: HTML attributes for the containing element.
  */
 function template_preprocess_audit_log(array &$variables) {
-  // Fetch AuditLog Entity Object.
-  $audit_log = $variables['element']['#audit_log'];
 }

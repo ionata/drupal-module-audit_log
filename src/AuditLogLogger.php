@@ -2,8 +2,11 @@
 
 namespace Drupal\audit_log;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\audit_log\EventSubscriber\EventSubscriberInterface;
+use Drupal\audit_log\StorageBackend\StorageBackendInterface;
 
 /**
  * Service for responding to audit log events.
@@ -11,6 +14,44 @@ use Drupal\audit_log\EventSubscriber\EventSubscriberInterface;
  * @package Drupal\audit_log
  */
 class AuditLogLogger {
+
+  /**
+   * The current user.
+   *
+   * @var \Drupal\Core\Session\AccountProxyInterface
+   */
+  protected $currentUser;
+
+  /**
+   * The current time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $time;
+
+  /**
+   * The storage backend.
+   *
+   * @var Drupal\audit_log\StorageBackend\StorageBackendInterface
+   */
+  protected $storage;
+
+  /**
+   * Constructs a AuditLogLogger object.
+   *
+   * @param \Drupal\Core\Session\AccountProxyInterface $current_user
+   *   The current user.
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The current time.
+   * @param \Drupal\audit_log\StorageBackend\StorageBackendInterface $storage
+   *   The storage backend service.
+   */
+  public function __construct(AccountProxyInterface $current_user, TimeInterface $time, StorageBackendInterface $storage) {
+    $this->currentUser = $current_user;
+    $this->time = $time;
+    $this->storage = $storage;
+  }
+
   /**
    * An array of available event subscribers to respond to events.
    *
@@ -28,15 +69,15 @@ class AuditLogLogger {
    */
   public function log($event_type, EntityInterface $entity) {
     $event = new AuditLogEvent();
-    $account = \Drupal::service('current_user')->getAccount();
+    $account = $this->currentUser->getAccount();
     $event->setUser($account);
     $event->setEntity($entity);
     $event->setEventType($event_type);
-    $event->setRequestTime(\Drupal::time()->getRequestTime());
+    $event->setRequestTime($this->time->getRequestTime());
 
     foreach ($this->sortEventSubscribers() as $event_subscriber) {
       if ($event_subscriber->reactTo($event)) {
-        \Drupal::service('audit_log.storage')->save($event);
+        $this->storage->save($event);
         break;
       }
     }

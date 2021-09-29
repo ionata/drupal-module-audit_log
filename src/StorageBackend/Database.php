@@ -2,6 +2,7 @@
 
 namespace Drupal\audit_log\StorageBackend;
 
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\audit_log\AuditLogEventInterface;
 use Drupal\audit_log\Entity\AuditLog;
 
@@ -11,6 +12,23 @@ use Drupal\audit_log\Entity\AuditLog;
  * @package Drupal\audit_log\StorageBackend
  */
 class Database implements StorageBackendInterface {
+
+  /**
+   * The module handler service.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
+   * Constructs a Database object.
+   *
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler service.
+   */
+  public function __construct(ModuleHandlerInterface $module_handler) {
+    $this->moduleHandler = $module_handler;
+  }
 
   /**
    * {@inheritdoc}
@@ -25,7 +43,7 @@ class Database implements StorageBackendInterface {
       'message' => $event->getMessage(),
     ];
 
-    \Drupal::moduleHandler()->alter('audit_log_save', $values, $event);
+    $this->moduleHandler->alter('audit_log_save', $values, $event);
 
     AuditLog::create($values)->save();
   }

@@ -5,6 +5,7 @@ namespace Drupal\audit_log\EventSubscriber;
 use Drupal\audit_log\AuditLogEventInterface;
 use Drupal\Core\Render\Markup;
 use Drupal\user\UserInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Processes User entity events.
@@ -12,6 +13,8 @@ use Drupal\user\UserInterface;
  * @package Drupal\audit_log\EventSubscriber
  */
 class User implements EventSubscriberInterface {
+
+  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
@@ -32,7 +35,7 @@ class User implements EventSubscriberInterface {
 
     if ($event_type == 'insert') {
       $event
-        ->setMessage(t('@name was created.', $args))
+        ->setMessage($this->t('@name was created.', $args))
         ->setPreviousState(NULL)
         ->setCurrentState($current_state);
       return TRUE;
@@ -40,7 +43,7 @@ class User implements EventSubscriberInterface {
 
     if ($event_type == 'update') {
       $event
-        ->setMessage(t('@name was updated.', $args))
+        ->setMessage($this->t('@name was updated.', $args))
         ->setPreviousState($original_state)
         ->setCurrentState($current_state);
       return TRUE;
@@ -48,7 +51,7 @@ class User implements EventSubscriberInterface {
 
     if ($event_type == 'delete') {
       $event
-        ->setMessage(t('@name was deleted.', $args))
+        ->setMessage($this->t('@name was deleted.', $args))
         ->setPreviousState($original_state)
         ->setCurrentState(NULL);
       return TRUE;
