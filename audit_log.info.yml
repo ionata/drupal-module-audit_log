@@ -2,4 +2,4 @@ type: module
 name: 'Audit Log'
 description: 'Provides a framework with swappable storage for logging entity audit events.'
 package: 'Audit Log'
-core_version_requirement: ^8.8 || ^9
+core_version_requirement: ^8.8 || ^9 || ^10
